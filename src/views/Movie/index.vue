@@ -4,7 +4,7 @@
        <div id="content">
           <div class="movie_menu">
             <router-link tag="div" to="/movie/cityList" class="city_name">
-                <span>city</span><i class="iconfont icon-lower-triangle"></i>
+                <span>城市</span><i class="iconfont icon-lower-triangle"></i>
             </router-link>
             <div class="hot_swtich">
                 <router-link tag="div" to="/movie/nowPlaying" class="hot_item">正在热映</router-link>
@@ -31,6 +31,10 @@ export default {
   components: {
     Header,
     tabBar
+  },
+  mounted() {
+      
+
   }
 }
 </script>
