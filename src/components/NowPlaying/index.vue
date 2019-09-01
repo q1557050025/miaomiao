@@ -1,6 +1,7 @@
 <template>
-  <div class="movie_body">
-    <div :handleToScroll="handleToScroll" :handleToTouchEnd="handleToTouchEnd">
+  <div class="movie_body" ref="movie_body">
+    <loading v-if="isLoading"></loading>
+    <better-scroll :handleToScroll="handleToScroll" :handleToTouchEnd="handleToTouchEnd" v-else>
       <ul>
         <li class="pullDown">{{ pullDownMsg }}</li>
         <li v-for="item in movieList" :key="item.id">
@@ -22,7 +23,7 @@
           <div class="btn_mall">购票</div>
         </li>
       </ul>
-    </div>
+    </better-scroll>
   </div>
 </template>
 
@@ -31,20 +32,70 @@ export default {
   data() {
     return {
       pullDownMsg: null,
-      movieList: []
+      movieList: [],
+      isLoading: true,
+      preCityId: -1
     };
   },
   methods: {
-    handleToDetail() {},
-    handleToDetail() {},
-    handleToScroll() {},
-    handleToTouchEnd() {}
+    handleToDetail() {
+      
+    },
+    handleToScroll(pos) {
+      if (pos.y > 30) {
+        this.pullDownMsg = "正在更新中";
+      }
+    },
+    handleToTouchEnd(pos) {
+      if (pos.y > 30) {
+        this.isLoading = true
+        this.$api.getMovieOnInfoList(10).then(res => {
+          this.pullDownMsg = "更新成功";
+          this.movieList = res.movieList;
+          this.pullDownMsg = null;
+          this.isLoading = false
+        });
+      }
+    },
+    setData(cityId) {
+      this.$api.getMovieOnInfoList(cityId).then(res => {
+        console.log("lkjREs", res);
+        this.movieList = res.movieList;
+        this.isLoading = false;
+        this.preCityId = cityId
+        this.$nextTick(() => {
+          // var scroll = new betterScroll( this.$refs.movie_body, {
+          //   tap: true,
+          //   probeType: 1
+          // })
+          // scroll.on("scroll", (pos) => {
+          //   console.log("scroll")
+          //   if(pos.y > 30) {
+          //     this.pullDownMsg = "正在更新中"
+          //   }
+          // })
+          // scroll.on('touchEnd', (pos) => {
+          //   if(pos.y > 30) {
+          //     this.$api.getMovieOnInfoList(10).then(res => {
+          //       this.pullDownMsg = "更新成功"
+          //       console.log("lkjREs", res);
+          //       this.movieList = res.movieList;
+          //       this.pullDownMsg = null
+          //     })
+          //   }
+          // })
+        });
+      });
+    }
   },
   activated() {
-    this.$api.getMovieOnInfoList(10).then(res => {
-      console.log("lkjREs", res);
-      this.movieList = res.movieList;
-    });
+    this.isLoading = true
+    let cityId = this.$store.state.city.id
+    if(this.preCityId !== cityId) {
+      this.setData(cityId)
+    } else {
+      this.isLoading = false
+    }
   }
 };
 </script>

@@ -1,6 +1,6 @@
 <template>
   <div class="movie_body">
-    <div>
+    <better-scroll :handleToScroll="handleToScroll" :handleToTouchEnd="handleToTouchEnd">
       <ul>
         <li v-for="item in commingList" :key="item.id">
           <div class="pic_show" @tap="handleToDetail(item.id)">
@@ -20,7 +20,7 @@
           <div class="btn_pre">预售</div>
         </li>
       </ul>
-    </div>
+    </better-scroll>
   </div>
 </template>
 
@@ -32,7 +32,12 @@ export default {
     };
   },
   methods: {
-
+    handleToScroll() {
+      console.log("handleToScroll")
+    },
+    handleToTouchEnd() {
+      console.log("handleToTouchEnd")
+    }
   },
   activated() {
     this.$api.getMovieComingList(10).then(res => {

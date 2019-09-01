@@ -10,6 +10,12 @@ import axios from 'axios'
 Vue.prototype.$axios = axios
 Vue.config.productionTip = false
 
+import betterScroll from "@/components/Scroll"
+Vue.component("betterScroll", betterScroll)
+
+import loading from "@/components/Loading"
+Vue.component("loading", loading)
+
 Vue.filter('setWH',(url , arg)=>{
   return url.replace(/w\.h/,arg);
 });
